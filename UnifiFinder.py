@@ -6,7 +6,7 @@ requests.urllib3.disable_warnings(InsecureRequestWarning)
 
 LIST_SITES = list()
 FOUND_MAC = False
-URL = "https://unifi.openinternet.net.br:8443/api/login"
+
 
 headers = {"Accept": "application/json",
            "Content-Type": "aplication/json"}
@@ -14,6 +14,7 @@ headers = {"Accept": "application/json",
 
 USERNAME = input(str("USERNAME ==> "))
 PASSWORD = input(str("PASSWORD ==> "))
+URL = input(str("URL OF YOUR CONTROLLER ==> "))
 
 
 credentials = f'"username": "{USERNAME}",\
@@ -27,8 +28,7 @@ with requests.Session() as session:
     print("ENTER THE MAC ADDRESS OF THE DEVICE YOU WANT TO FIND: ")
     MAC = str(input("PUT MAC ADDRESS WITH 2 DOTS (:) ==> ")).lower()
 
-    URLS = session.get(
-        url="https://unifi.openinternet.net.br:8443/api/self/sites").json()
+    URLS = session.get(url=URL).json()
 
     for x in URLS['data']:
         LIST_SITES.append(x['name'])
@@ -44,8 +44,7 @@ with requests.Session() as session:
                 break
 
         # Retrieves device MAC
-        sites = session.get(
-            url=f"https://unifi.openinternet.net.br:8443/api/s/{x}/stat/device").json()
+        sites = session.get(url=f"{URL}/api/s/{x}/stat/device").json()
 
         for mac in sites['data']:
             if mac['mac'] == MAC:
